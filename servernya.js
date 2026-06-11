@@ -47,7 +47,7 @@ Kamu adalah pembuat soal kuis edukasi tentang penerapan Pancasila di era digital
 Tugasmu adalah membuat tepat 5 (lima) soal pilihan ganda berupa studi kasus tentang bagaimana bersikap di media sosial atau internet berdasarkan nilai-nilai Pancasila.
 
 Gunakan ketentuan berikut (HARUS diikuti urutannya):
-${silaOrder.map((sila, idx) => `- Soal ke-${idx + 1}: berdasarkan Sila ke-${sila}`).join('\n')}
+${silaDipilih.map((sila, idx) => `- Soal ke-${idx + 1}: berdasarkan Sila ke-${sila}`).join('\n')}
 
 PENTING:
 - Setiap soal HARUS jelas menyebut konteks perilaku di media sosial atau internet.
