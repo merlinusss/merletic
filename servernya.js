@@ -29,24 +29,28 @@ app.post('/generate', async (req, res) => {
     console.log("=== KOMPOSISI SOAL KALI INI ===");
     console.log(instruksiDistribusi);
 
-    const promptDinamis = `Kamu adalah pembuat soal kuis edukasi tentang penerapan Pancasila di era digital. Tugasmu adalah membuat tepat 5 (lima) soal pilihan ganda berupa studi kasus tentang bagaimana bersikap di media sosial atau internet. 
+    const promptDinamis = `Kamu adalah pembuat soal kuis edukasi tingkat lanjut (HOTS) tentang penerapan Pancasila di era digital. Tugasmu adalah membuat tepat 5 (lima) soal pilihan ganda berupa studi kasus.
 
 PENTING: Buatkan komposisi soal dengan pembagian persis seperti ini: ${instruksiDistribusi}.
 
-Pastikan posisi jawaban yang benar (correct index) bervariasi secara acak (bisa 0, 1, 2, atau 3) di setiap soal, JANGAN meletakkan jawaban benar di index yang sama terus-menerus. Output wajib HANYA berupa format Array JSON murni tanpa ada teks pembuka, penutup, atau markdown block.
+ATURAN TINGKAT KESULITAN & FORMAT:
+1. PANJANG TEKS PILIHAN JAWABAN HARUS SERAGAM. Jangan sampai jawaban yang benar terlihat paling panjang, paling detail, atau paling formal. Keempat opsi harus memiliki jumlah kata yang mirip.
+2. Pilihan jawaban yang salah (distractor) HARUS SANGAT MASUK AKAL dan menjebak. Buat seolah-olah itu adalah tindakan "netral" atau "solusi praktis", padahal secara esensi nilai Pancasila itu kurang tepat. Jangan buat pilihan salah yang keburukannya terlalu kentara (misal: "memaki", "memblokir", "menyebar hoaks").
+3. Pastikan posisi jawaban yang benar (correct index) bervariasi secara acak (bisa 0, 1, 2, atau 3) di setiap soal. Jangan polanya ketebak.
+4. Output wajib HANYA berupa format Array JSON murni tanpa ada teks pembuka, penutup, atau markdown block.
 
 Gunakan struktur Array persis seperti ini:
 [
   {
-    "q": "[Pertanyaan studi kasus]",
+    "q": "[Pertanyaan studi kasus yang kompleks]",
     "opts": [
-      "[Pilihan jawaban index 0]",
-      "[Pilihan jawaban index 1]",
-      "[Pilihan jawaban index 2]",
-      "[Pilihan jawaban index 3]"
+      "[Pilihan jawaban index 0 (panjang teks seragam)]",
+      "[Pilihan jawaban index 1 (panjang teks seragam)]",
+      "[Pilihan jawaban index 2 (panjang teks seragam)]",
+      "[Pilihan jawaban index 3 (panjang teks seragam)]"
     ],
     "correct": [Angka index jawaban benar antara 0-3],
-    "feedback": "[Penjelasan jawaban mengacu pada Sila ke-berapa dan alasannya]"
+    "feedback": "[Penjelasan mengapa jawaban benar dan mengapa opsi lain kurang tepat]"
   }
 ]`;
 
