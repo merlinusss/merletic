@@ -1244,7 +1244,6 @@ setTimeout(checkReveal, 200);
 function toggleAcc(header) {
   const body = header.nextElementSibling;
   const isOpen = body.classList.contains('open');
-  // Close all
   document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'));
   document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('open'));
   if (!isOpen) {
@@ -1265,15 +1264,40 @@ function showTab(id, btn) {
 let currentQ = 0;
 let score = 0;
 let answered = false;
+let newQuestion = null;
+let isLoading = false;
 
 async function makingQuestion() {
-  const response = await fetch('/generate', { method: 'POST' });
-  if (!response.ok) throw new Error("Gagal mengambil data dari server");
-  return await response.json();
+  isLoading = true;
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = `<div style="padding:2rem;text-align:center;color:var(--warm-gray);">Memuat soal... Mohon tunggu.</div>`;
+  try {
+    const response = await fetch('/generate', { method: 'POST' });
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Gagal mengambil data dari server: ${response.status} ${response.statusText} ${text}`);
+    }
+    newQuestion = await response.json();
+    return newQuestion;
+  } catch (err) {
+    document.getElementById('quiz-container').innerHTML = `<div style="padding:2rem;text-align:center;color:var(--warm-gray);">Terjadi kesalahan saat memuat soal.<br><button class="btn-primary" onclick="initQuiz()">Muat Ulang</button></div>`;
+    console.error(err);
+    throw err;
+  } finally {
+    isLoading = false;
+  }
 }
 
-function renderQuiz() {
-  let newQuestion = makingQuestion();
+async function renderQuiz() {
+  if (!newQuestion) {
+    await makingQuestion();
+  }
+
+  if (!Array.isArray(newQuestion) || newQuestion.length === 0) {
+    document.getElementById('quiz-container').innerHTML = `<div style="padding:2rem;text-align:center;color:var(--warm-gray);">Tidak ada soal tersedia.</div>`;
+    return;
+  }
+
   if (currentQ >= newQuestion.length) {
     document.getElementById('quiz-container').innerHTML = `
       <div style="text-align:center; padding:3rem; background:var(--parchment); border:1px solid var(--border);">
@@ -1285,6 +1309,7 @@ function renderQuiz() {
     document.getElementById('quiz-next-btn').style.display='none';
     return;
   }
+
   const q = newQuestion[currentQ];
   document.getElementById('quiz-container').innerHTML = `
     <div class="quiz-q">
@@ -1293,7 +1318,7 @@ function renderQuiz() {
       <div class="quiz-options">
         ${q.opts.map((o,i) => `<button class="quiz-opt" onclick="answerQuiz(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
       </div>
-      <div class="quiz-feedback" id="quiz-fb">${q.feedback}</div>
+      <div class="quiz-feedback" id="quiz-fb" style="display:none">${q.feedback}</div>
     </div>`;
   answered = false;
   document.getElementById('quiz-score').textContent = `Skor: ${score} / ${currentQ}`;
@@ -1302,7 +1327,6 @@ function renderQuiz() {
 
 function answerQuiz(idx) {
   if (answered) return;
-  let newQuestion = makingQuestion()
   answered = true;
   const q = newQuestion[currentQ];
   const opts = document.querySelectorAll('.quiz-opt');
@@ -1314,18 +1338,24 @@ function answerQuiz(idx) {
   document.getElementById('quiz-score').textContent = `Skor: ${score} / ${currentQ+1}`;
 }
 
-function nextQuestion() {
+async function nextQuestion() {
   currentQ++;
-  renderQuiz();
+  await renderQuiz();
 }
 
-function resetQuiz() {
-  currentQ = 0; score = 0; answered = false;
+async function resetQuiz() {
+  currentQ = 0; score = 0; answered = false; newQuestion = null;
   document.getElementById('quiz-next-btn').style.display='block';
-  renderQuiz();
+  await renderQuiz();
 }
 
-renderQuiz();
+async function initQuiz() {
+  currentQ = 0; score = 0; answered = false;
+  document.getElementById('quiz-score').textContent = `Skor: 0 / 0`;
+  await renderQuiz();
+}
+
+initQuiz();
 
 function submitKomentar() {
   const input = document.getElementById('komentarInput');
