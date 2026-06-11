@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = 3000;
@@ -70,7 +71,6 @@ Gunakan struktur Array persis seperti ini:
         ]
       })
     });
-
     const data = await response.json();
     
     if (!response.ok) {
@@ -82,13 +82,12 @@ Gunakan struktur Array persis seperti ini:
     newQuestions.forEach(kuis => {
       const teksJawabanBenar = kuis.opts[kuis.correct];
       for (let i = kuis.opts.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = crypto.randomInt(0, i + 1); 
         [kuis.opts[i], kuis.opts[j]] = [kuis.opts[j], kuis.opts[i]];
       }
       kuis.correct = kuis.opts.indexOf(teksJawabanBenar);
     });
     res.json(newQuestions);
-
   } catch (error) {
     console.error("Error di server:", error);
     res.status(500).json({ error: "Terjadi kesalahan internal pada server lokal." });

@@ -1021,14 +1021,11 @@
     <div class="tab-nav">
       <button class="tab-btn active" onclick="showTab('quiz',this)">Kuis Nilai Pancasila</button>
       <button class="tab-btn" onclick="showTab('simulasi',this)">Simulasi Komentar</button>
-      <button class="tab-btn" onclick="showTab('polling',this)">Polling Pendapat</button>
     </div>
 
     <!-- QUIZ -->
     <div class="tab-content active" id="tab-quiz">
-      <div id="quiz-container">
-        <!-- pertanyaan dirender JS -->
-      </div>
+      <div id="quiz-container"></div>
       <div class="quiz-footer">
         <div class="quiz-score" id="quiz-score">Skor: 0 / 0</div>
         <button class="btn-primary" id="quiz-next-btn" onclick="nextQuestion()">Pertanyaan Berikutnya →</button>
@@ -1047,7 +1044,6 @@
         <button class="btn-primary" onclick="submitKomentar()">Kirim Komentar</button>
       </div>
       <div class="komentar-list" id="komentarList">
-        <!-- contoh awal -->
         <div class="komentar-item">
           <div class="k-user">Contoh Pengguna A</div>
           <div class="k-text">Wah informasi yang sangat bermanfaat! Terima kasih sudah berbagi 🙏</div>
@@ -1060,13 +1056,6 @@
           <span class="k-label negatif">Bertentangan</span>
           <div class="k-tip" style="display:block">✗ Komentar ini merendahkan martabat orang lain dan bertentangan dengan Sila II: Kemanusiaan yang Adil dan Beradab.</div>
         </div>
-      </div>
-    </div>
-
-    <!-- POLLING -->
-    <div class="tab-content" id="tab-polling">
-      <div id="poll-container">
-        <!-- dirender JS -->
       </div>
     </div>
 
@@ -1396,64 +1385,6 @@ function submitKomentar() {
   input.value = '';
 }
 
-// ─── POLLING ───
-const pollData = [
-  {
-    q: "Seberapa sering kamu memverifikasi kebenaran berita sebelum membagikannya ke orang lain?",
-    opts: [
-      { label: "Selalu, saya selalu cek dulu", votes: 42 },
-      { label: "Kadang-kadang, kalau sempat", votes: 87 },
-      { label: "Jarang, kalau judulnya menarik langsung share", votes: 56 },
-      { label: "Tidak pernah memikirkan hal itu", votes: 23 }
-    ]
-  },
-  {
-    q: "Apa tindakanmu ketika menyaksikan cyberbullying di media sosial?",
-    opts: [
-      { label: "Langsung laporkan dan bela korban", votes: 38 },
-      { label: "Diam dan tidak ikut campur", votes: 91 },
-      { label: "Ikut berkomentar untuk melerai", votes: 34 },
-      { label: "Tidak tahu harus berbuat apa", votes: 45 }
-    ]
-  }
-];
-
-let currentPoll = 0;
-let pollVoted = [false, false];
-
-function renderPoll() {
-  const poll = pollData[currentPoll];
-  const total = poll.opts.reduce((s,o) => s + o.votes, 0);
-  document.getElementById('poll-container').innerHTML = `
-    <div style="margin-bottom:1.5rem;">
-      <div style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Polling ${currentPoll+1} dari ${pollData.length}</div>
-      <p class="poll-q">${poll.q}</p>
-    </div>
-    ${poll.opts.map((o,i) => `
-      <div class="poll-opt ${pollVoted[currentPoll] ? 'poll-voted' : ''}" onclick="votePoll(${i})">
-        <div class="poll-opt-label">
-          <span>${o.label}</span>
-          <span style="color:var(--warm-gray);font-size:0.82rem;">${pollVoted[currentPoll] ? Math.round(o.votes/total*100)+'%' : ''}</span>
-        </div>
-        <div class="poll-bar-bg">
-          <div class="poll-bar-fill" style="width:${pollVoted[currentPoll] ? Math.round(o.votes/total*100) : 0}%"></div>
-        </div>
-      </div>`).join('')}
-    <div style="margin-top:2rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-      ${currentPoll > 0 ? `<button class="btn-primary" onclick="currentPoll--;renderPoll()">← Sebelumnya</button>` : ''}
-      ${currentPoll < pollData.length-1 ? `<button class="btn-primary" onclick="currentPoll++;renderPoll()">Berikutnya →</button>` : ''}
-      <span style="font-size:0.82rem;color:var(--warm-gray);font-style:italic;">${pollVoted[currentPoll] ? `Total ${total+1} responden` : 'Pilih untuk melihat hasil'}</span>
-    </div>`;
-}
-
-function votePoll(idx) {
-  if (pollVoted[currentPoll]) return;
-  pollVoted[currentPoll] = true;
-  pollData[currentPoll].opts[idx].votes++;
-  renderPoll();
-}
-
-renderPoll();
 </script>
 </body>
 </html>
