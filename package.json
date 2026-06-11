@@ -1,0 +1,25 @@
+{
+  "name": "merletic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "servernya.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/merlinusss/merletic.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/merlinusss/merletic/issues"
+  },
+  "homepage": "https://github.com/merlinusss/merletic#readme",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}
