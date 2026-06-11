@@ -74,6 +74,26 @@ Gunakan struktur Array persis seperti ini:
       throw new Error('Tidak menemukan hasil kuis yang valid pada jawaban AI');
     }
 
+    try {
+      if (Array.isArray(newQuestionObj)) {
+        newQuestionObj.forEach(q => {
+          if (!Array.isArray(q.opts) || typeof q.correct !== 'number') return;
+          const opts = q.opts.slice();
+          const idx = opts.map((_, i) => i);
+          for (let i = idx.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [idx[i], idx[j]] = [idx[j], idx[i]];
+          }
+          const newOpts = idx.map(i => opts[i]);
+          const newCorrect = idx.indexOf(q.correct);
+          q.opts = newOpts;
+          q.correct = newCorrect;
+        });
+      }
+    } catch (e) {
+      console.error('Gagal merandomisasi soal:', e);
+    }
+
     res.json(newQuestionObj);
   } catch (error) {
     console.error(error);
