@@ -26,8 +26,9 @@ app.post('/generate', async (req, res) => {
         }]
       })
     });
+    console.log("=== DATA DARI AI ===");
+    console.log(response)
     const newQuestionObj = JSON.parse(response.result.text);
-    throw new console(response)
     res.json(newQuestionObj);
   } catch (error) {
     console.error(error);
