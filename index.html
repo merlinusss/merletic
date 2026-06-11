@@ -1344,6 +1344,7 @@ async function nextQuestion() {
 }
 
 async function resetQuiz() {
+  newQuestion = null
   currentQ = 0; score = 0; answered = false; newQuestion = null;
   document.getElementById('quiz-next-btn').style.display='block';
   await renderQuiz();
