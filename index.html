@@ -449,6 +449,53 @@
     padding:1.5rem; margin-bottom:2rem;
     font-style:italic; font-size:0.92rem; line-height:1.7;
   }
+  .berita-list {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:1.5rem;
+  }
+  .card-berita {
+    background:var(--parchment);
+    border:1px solid var(--border);
+    padding:1.6rem;
+    display:flex;
+    flex-direction:column;
+    gap:0.9rem;
+  }
+  .card-berita h3 {
+    font-size:1.05rem;
+    margin:0;
+    color:var(--ink);
+  }
+  .card-berita p {
+    font-size:0.92rem;
+    line-height:1.6;
+    color:var(--warm-gray);
+    margin:0;
+    flex:1;
+  }
+  .btn-baca {
+    display:inline-block;
+    background:var(--ink);
+    color:var(--parchment);
+    text-decoration:none;
+    padding:0.75rem 1.2rem;
+    font-family:'IM Fell English',serif;
+    font-size:0.9rem;
+    transition:background 0.2s;
+  }
+  .btn-baca:hover { background:var(--red); }
+  .berita-loading,
+  .berita-error {
+    padding:2rem;
+    border:1px solid var(--border);
+    background:var(--cream);
+    color:var(--warm-gray);
+    text-align:center;
+  }
+  .berita-error button {
+    margin-top:1rem;
+  }
   .komentar-input-area {
     display:flex; gap:1rem; margin-bottom:2rem;
     align-items:flex-end;
@@ -1020,7 +1067,7 @@
   <div class="interaktif-body">
     <div class="tab-nav">
       <button class="tab-btn active" onclick="showTab('quiz',this)">Kuis Nilai Pancasila</button>
-      <button class="tab-btn" onclick="showTab('simulasi',this)">Simulasi Komentar</button>
+      <button class="tab-btn" onclick="showTab('simulasi',this)">Berita Terkini</button>
     </div>
 
     <!-- QUIZ -->
@@ -1032,30 +1079,13 @@
       </div>
     </div>
 
-    <!-- SIMULASI KOMENTAR -->
+    <!-- BERITA TERKINI -->
     <div class="tab-content" id="tab-simulasi">
       <div class="simulasi-intro">
-        <strong>Simulasi Komentar Digital:</strong> Ketik komentar apapun di bawah ini, lalu sistem akan menganalisis
-        apakah komentar tersebut sesuai atau bertentangan dengan nilai-nilai Pancasila. Tujuannya adalah
-        membangun kesadaran tentang bagaimana kata-kata kita berdampak di ruang digital.
+        <strong>Berita Digital:</strong> Temukan ringkasan berita terbaru yang relevan dengan konteks etika dan nilai Pancasila di dunia digital. Setiap kartu akan menyediakan link ke pencarian Google News berbahasa Indonesia.
       </div>
-      <div class="komentar-input-area">
-        <textarea id="komentarInput" placeholder="Ketik komentar Anda di sini..."></textarea>
-        <button class="btn-primary" onclick="submitKomentar()">Kirim Komentar</button>
-      </div>
-      <div class="komentar-list" id="komentarList">
-        <div class="komentar-item">
-          <div class="k-user">Contoh Pengguna A</div>
-          <div class="k-text">Wah informasi yang sangat bermanfaat! Terima kasih sudah berbagi 🙏</div>
-          <span class="k-label positif">Positif</span>
-          <div class="k-tip" style="display:block">✓ Komentar ini membangun suasana positif dan menghargai kontribusi orang lain — mencerminkan nilai Sila II.</div>
-        </div>
-        <div class="komentar-item">
-          <div class="k-user">Contoh Pengguna B</div>
-          <div class="k-text">Dasar bodoh, nggak ngerti apa-apa juga sok ikut komentar!</div>
-          <span class="k-label negatif">Bertentangan</span>
-          <div class="k-tip" style="display:block">✗ Komentar ini merendahkan martabat orang lain dan bertentangan dengan Sila II: Kemanusiaan yang Adil dan Beradab.</div>
-        </div>
+      <div id="berita-list" class="berita-list">
+        <div class="berita-loading">Memuat berita... Mohon tunggu.</div>
       </div>
     </div>
 
@@ -1247,6 +1277,53 @@ function showTab(id, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
+  if (id === 'simulasi') {
+    loadBerita();
+  }
+}
+
+let beritaLoaded = false;
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderBeritaCard(berita) {
+  const query = encodeURIComponent(berita.keyword_pencarian || berita.judul || 'pancasila');
+  const urlGoogleNews = `https://news.google.com/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
+  return `
+    <div class="card-berita">
+      <h3>${escapeHtml(berita.judul || 'Judul tidak tersedia')}</h3>
+      <p>${escapeHtml(berita.ringkasan || 'Ringkasan berita tidak tersedia.')}</p>
+      <a href="${urlGoogleNews}" target="_blank" class="btn-baca">Baca Berita Asli</a>
+    </div>`;
+}
+
+async function loadBerita() {
+  if (beritaLoaded) return;
+  const container = document.getElementById('berita-list');
+  container.innerHTML = `<div class="berita-loading">Memuat berita... Mohon tunggu.</div>`;
+  try {
+    const response = await fetch('/get-berita');
+    if (!response.ok) {
+      throw new Error(`Gagal memuat berita: ${response.status} ${response.statusText}`);
+    }
+    const beritaData = await response.json();
+    if (!Array.isArray(beritaData) || beritaData.length === 0) {
+      container.innerHTML = `<div class="berita-loading">Tidak ada berita terbaru saat ini.</div>`;
+      return;
+    }
+    container.innerHTML = beritaData.map(renderBeritaCard).join('');
+    beritaLoaded = true;
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = `<div class="berita-error">Gagal memuat berita. <button class="btn-primary" onclick="loadBerita()">Muat Ulang</button></div>`;
+  }
 }
 
 // ─── QUIZ ───
@@ -1347,43 +1424,6 @@ async function initQuiz() {
 
 initQuiz();
 
-function submitKomentar() {
-  const input = document.getElementById('komentarInput');
-  const text = input.value.trim();
-  if (!text) return;
-
-  const negKeywords = ['bodoh','idiot','bangsat','babi','tolol','goblok','anjing','brengsek','dasar','kampungan','jelek','hina','kafir','sesat','mati','bunuh','hancur','benci'];
-  const posKeywords = ['terima kasih','bagus','keren','luar biasa','inspiratif','bermanfaat','setuju','sependapat','semangat','sukses','baik','benar','tepat','mantap','hebat'];
-  const relKeywords = ['tapi','mungkin','sebaiknya','menurutku','pendapatku','perlu','meski'];
-
-  const lc = text.toLowerCase();
-  let type = 'netral';
-  let tip = '';
-
-  if (negKeywords.some(k => lc.includes(k))) {
-    type = 'negatif';
-    tip = '✗ Komentar ini mengandung kata-kata yang dapat melukai atau merendahkan orang lain. Bertentangan dengan Sila II: Kemanusiaan yang Adil dan Beradab. Coba ungkapkan dengan cara yang lebih santun.';
-  } else if (posKeywords.some(k => lc.includes(k))) {
-    type = 'positif';
-    tip = '✓ Komentar ini bersifat konstruktif dan menghargai orang lain. Mencerminkan nilai Sila II dan Sila IV — kemanusiaan yang beradab dan komunikasi yang bijaksana.';
-  } else if (relKeywords.some(k => lc.includes(k))) {
-    type = 'netral';
-    tip = '→ Komentar ini netral dan mengandung nuansa pendapat. Pastikan disampaikan dengan data dan argumen yang terstruktur agar sesuai nilai Sila IV: musyawarah yang bijak.';
-  } else {
-    tip = '→ Komentar ini terdeteksi netral. Konteks lebih dalam diperlukan untuk menentukan apakah sesuai nilai Pancasila. Selalu pertimbangkan dampak kata-katamu terhadap perasaan orang lain.';
-  }
-
-  const item = document.createElement('div');
-  item.className = 'komentar-item';
-  item.innerHTML = `
-    <div class="k-user">Anda</div>
-    <div class="k-text">${text.replace(/</g,'&lt;')}</div>
-    <span class="k-label ${type}">${type === 'positif' ? 'Positif' : type === 'negatif' ? 'Bertentangan' : 'Netral'}</span>
-    <div class="k-tip" style="display:block">${tip}</div>`;
-
-  document.getElementById('komentarList').prepend(item);
-  input.value = '';
-}
 
 </script>
 </body>
