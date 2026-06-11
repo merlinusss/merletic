@@ -26,6 +26,7 @@ app.post('/generate', async (req, res) => {
       })
     });
     const newQuestionObj = JSON.parse(data.result.text);
+    throw new console(newQuestionObj)
     res.json(newQuestionObj);
   } catch (error) {
     console.error(error);

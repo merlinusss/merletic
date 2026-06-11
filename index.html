@@ -1262,76 +1262,22 @@ function showTab(id, btn) {
 }
 
 // ─── QUIZ ───
-const quizData = [
-  {
-    q: "Kamu melihat temanmu memposting meme yang mengolok-olok agama tertentu. Tindakan mana yang paling mencerminkan nilai Pancasila?",
-    opts: [
-      "Ikut membagikan karena lucu dan kamu juga tidak suka agama tersebut",
-      "Diam saja, bukan urusanmu",
-      "Mengingatkan temanmu secara baik-baik bahwa konten tersebut dapat menyinggung perasaan orang lain",
-      "Langsung memaki temanmu di kolom komentar"
-    ],
-    correct: 2,
-    feedback: "Sila I mengajarkan kita untuk menghormati perbedaan keyakinan. Mengingatkan dengan baik adalah bentuk pengamalan nilai ini — jauh lebih efektif dan bermartabat daripada diam atau membalas dengan kekerasan."
-  },
-  {
-    q: "Seseorang yang kamu tidak kenal terus-menerus mendapat serangan komentar kasar di media sosial. Sebagai netizen yang memegang nilai Pancasila, apa yang sebaiknya kamu lakukan?",
-    opts: [
-      "Ikut berkomentar, mungkin orang itu memang salah",
-      "Tidak peduli, bukan masalahmu",
-      "Melaporkan komentar-komentar tersebut dan bila perlu memberikan dukungan kepada korban",
-      "Screenshot dan sebarkan sebagai hiburan"
-    ],
-    correct: 2,
-    feedback: "Sila II: Kemanusiaan yang Adil dan Beradab mengharuskan kita melindungi martabat sesama manusia, bahkan orang yang tidak kita kenal. Tindakan melaporkan dan mendukung korban adalah bentuk nyata kepedulian kemanusiaan."
-  },
-  {
-    q: "Kamu menerima pesan berantai berisi berita mengejutkan tentang tokoh publik. Langkah pertama yang paling tepat sebelum menyebarkannya adalah...",
-    opts: [
-      "Langsung forward ke semua grup agar semua tahu",
-      "Simpan dulu, sebarkan nanti kalau sudah banyak yang tahu",
-      "Cek kebenarannya di sumber terpercaya atau platform fact-checking",
-      "Tambahkan komentar provokatif agar lebih viral"
-    ],
-    correct: 2,
-    feedback: "Sila III tentang Persatuan Indonesia terancam oleh hoaks. Memverifikasi informasi sebelum menyebarkannya adalah bentuk tanggung jawab digital yang mencerminkan cinta tanah air."
-  },
-  {
-    q: "Dalam diskusi online, seseorang mengungkapkan pendapat yang sangat berbeda dari pendapatmu. Respons yang paling mencerminkan nilai Sila IV adalah...",
-    opts: [
-      "Langsung serang dengan fakta-fakta yang membuat mereka terlihat bodoh",
-      "Blokir orang tersebut karena tidak mau mendengarkan",
-      "Merespons dengan argumentasi yang terstruktur sambil tetap menghormati sudut pandang mereka",
-      "Tag teman-temanmu untuk keroyokan membantah argumennya"
-    ],
-    correct: 2,
-    feedback: "Sila IV tentang musyawarah-mufakat mengajarkan kita untuk berdiskusi dengan hikmat dan bijaksana. Menghormati perbedaan pendapat sambil menyampaikan argumen yang baik adalah inti dari demokrasi yang sehat."
-  },
-  {
-    q: "Temanmu terus-menerus posting foto barang mewah dan pamer kekayaan, sementara kamu tahu banyak tetangga di sekitar kita yang kesulitan. Nilai Pancasila mana yang paling relevan untuk direfleksikan?",
-    opts: [
-      "Sila I — karena ini masalah moral personal",
-      "Sila III — karena ini bisa memecah teman-temannya",
-      "Sila V — karena tindakan ini dapat memperparah kesenjangan sosial dan mengikis kepedulian",
-      "Tidak ada yang dilanggar, itu hak pribadi"
-    ],
-    correct: 2,
-    feedback: "Sila V tentang Keadilan Sosial bukan hanya soal kebijakan pemerintah. Sikap kita di media sosial juga berkontribusi pada iklim sosial masyarakat. Pamer kekayaan berlebihan di tengah kesenjangan dapat memperparah ketidakadilan sosial secara psikologis."
-  }
-];
-
 let currentQ = 0;
 let score = 0;
 let answered = false;
 
-async function renderQuiz() {
+async function makingQuestion() {
   const response = await fetch('/generate', { method: 'POST' });
   if (!response.ok) throw new Error("Gagal mengambil data dari server");
-  const newQuestion = await response.json();
-  if (currentQ >= quizData.length) {
+  return await response.json();
+}
+
+function renderQuiz() {
+  let newQuestion = makingQuestion();
+  if (currentQ >= newQuestion.length) {
     document.getElementById('quiz-container').innerHTML = `
       <div style="text-align:center; padding:3rem; background:var(--parchment); border:1px solid var(--border);">
-        <div style="font-family:'IM Fell English SC',serif; font-size:2.5rem; color:var(--gold); margin-bottom:1rem;">${score}/${quizData.length}</div>
+        <div style="font-family:'IM Fell English SC',serif; font-size:2.5rem; color:var(--gold); margin-bottom:1rem;">${score}/${newQuestion.length}</div>
         <p style="font-style:italic; font-size:1.1rem; margin-bottom:0.5rem;">Kuis selesai!</p>
         <p style="color:var(--warm-gray); font-size:0.9rem; margin-bottom:2rem;">${score >= 4 ? 'Pemahaman nilai Pancasilamu sangat baik. Terus terapkan dalam kehidupan digital!' : score >= 3 ? 'Cukup baik! Pelajari lagi sila-sila yang masih perlu didalami.' : 'Yuk, pelajari lebih dalam nilai-nilai Pancasila dan terapkan di kehidupan digital sehari-hari.'}</p>
         <button class="btn-primary" onclick="resetQuiz()">Ulangi Kuis</button>
@@ -1339,10 +1285,10 @@ async function renderQuiz() {
     document.getElementById('quiz-next-btn').style.display='none';
     return;
   }
-  const q = quizData[currentQ];
+  const q = newQuestion[currentQ];
   document.getElementById('quiz-container').innerHTML = `
     <div class="quiz-q">
-      <div class="quiz-num">Pertanyaan ${currentQ+1} dari ${quizData.length}</div>
+      <div class="quiz-num">Pertanyaan ${currentQ+1} dari ${newQuestion.length}</div>
       <div class="quiz-text">${q.q}</div>
       <div class="quiz-options">
         ${q.opts.map((o,i) => `<button class="quiz-opt" onclick="answerQuiz(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
@@ -1356,8 +1302,9 @@ async function renderQuiz() {
 
 function answerQuiz(idx) {
   if (answered) return;
+  let newQuestion = makingQuestion()
   answered = true;
-  const q = quizData[currentQ];
+  const q = newQuestion[currentQ];
   const opts = document.querySelectorAll('.quiz-opt');
   opts[idx].classList.add(idx === q.correct ? 'correct' : 'wrong');
   opts[q.correct].classList.add('correct');
