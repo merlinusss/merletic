@@ -1380,6 +1380,7 @@ async function initQuiz() {
 
 // ─── BERITA ───
 let beritaLoaded = false;
+let beritaLoading = false;
 
 function escapeHtml(text) {
   return String(text)
@@ -1436,7 +1437,8 @@ function renderBeritaCard(berita) {
 }
 
 async function loadBerita() {
-  if (beritaLoaded) return;
+  if (beritaLoaded || beritaLoading) return;
+  beritaLoading = true;
   const container = document.getElementById('berita-list');
   container.innerHTML = `<div class="berita-loading">Memuat berita... Mohon tunggu.</div>`;
   try {
@@ -1453,6 +1455,7 @@ async function loadBerita() {
     beritaLoaded = true;
   } catch (err) {
     console.error(err);
+    beritaLoading = false;
     container.innerHTML = `<div class="berita-error">Gagal memuat berita. <button class="btn-primary" onclick="loadBerita()">Muat Ulang</button></div>`;
   }
 }
