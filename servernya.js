@@ -97,7 +97,7 @@ app.get('/get-berita', async (req, res) => {
     const tanggalSekarang = new Date().toLocaleDateString('id-ID', opsiTanggal);
 
     const promptBerita = `Kamu adalah kurator berita untuk portal "Ruang Berita". Waktu saat ini di Indonesia adalah: ${tanggalSekarang}. 
-Tugasmu adalah merangkum 5 berita atau isu sosial yang sedang hangat dibicarakan di Indonesia dalam 7 hingga 14 hari terakhir.
+Tugasmu adalah merangkum 9 berita atau isu sosial yang sedang hangat dibicarakan di Indonesia dalam 7 hingga 14 hari terakhir.
 
 PENTING: JANGAN PERNAH MENGARANG ATAU MEMBUAT URL/LINK PALSU KE PORTAL BERITA. AI dilarang keras membuat link berawalan detik.com, kompas.com, dll karena pasti akan menjadi link mati (404). 
 Sebagai gantinya, buatkan 'keyword_pencarian' yang sangat spesifik berdasarkan judul berita tersebut.
