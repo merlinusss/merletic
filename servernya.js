@@ -1,11 +1,15 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 
 const app = express();
-const PORT = 3004;
+const PORT = 3000;
 
 app.use(express.json());
-
+app.use(express.static(__dirname));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 app.post('/generate', async (req, res) => {
   try {
     const response = await fetch('https://api.maelyn.eu/api/ai/chatgpt', {
@@ -30,5 +34,6 @@ app.post('/generate', async (req, res) => {
 });
 
 app.listen(PORT, () => {
+  console.log(`Sudah on bang!!!`);
   console.log(`Server Express berjalan di http://localhost:${PORT}`);
 });
