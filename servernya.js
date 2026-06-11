@@ -24,23 +24,6 @@ function getRandomSilaOrder() {
 app.post('/generate', async (req, res) => {
   try {
     const silaDipilih = [];
-    for (let i = 0; i < 5; i++) {
-      const randomSila = Math.floor(Math.random() * 5) + 1;
-      silaDipilih.push(randomSila);
-    }
-    const hitungSila = {};
-    silaDipilih.forEach(sila => {
-      hitungSila[sila] = (hitungSila[sila] || 0) + 1;
-    });
-    const instruksiDistribusi = Object.entries(hitungSila)
-      .map(([sila, jumlah]) => `${jumlah} soal untuk Sila ke-${sila}`)
-      .join(', ');
-
-    const opsiTanggal = { timeZone: 'Asia/Jakarta', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const tanggalSekarang = new Date().toLocaleDateString('id-ID', opsiTanggal);
-
-    console.log("=== KOMPOSISI SOAL KALI INI ===");
-    console.log(instruksiDistribusi);
     const promptDinamis = `
 Kamu adalah pembuat soal kuis edukasi tentang penerapan Pancasila di era digital.
 
@@ -139,7 +122,7 @@ Gunakan struktur Array persis seperti ini:
     const data = await response.json();
     console.log("=== RESPONS DARI API BERITA ===");
     console.log(data);
-    const rawText = data.result || data.message || data; 
+    const rawText = data.result.text;
     const beritaArray = JSON.parse(rawText);
     res.json(beritaArray)
   } catch (error) {
