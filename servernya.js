@@ -13,7 +13,27 @@ app.get('/', (req, res) => {
 
 app.post('/generate', async (req, res) => {
   try {
-    const prompt = `Kamu adalah pembuat soal kuis edukasi tentang penerapan Pancasila di era digital. Tugasmu adalah membuat tepat 5 (lima) soal pilihan ganda berupa studi kasus tentang bagaimana bersikap di media sosial atau internet berdasarkan nilai-nilai Pancasila (buatkan masing-masing 1 soal untuk Sila ke-1 sampai ke-5). PENTING: Pastikan posisi jawaban yang benar (correct index) bervariasi secara acak (bisa 0, 1, 2, atau 3) di setiap soal, JANGAN meletakkan jawaban benar di index yang sama terus-menerus. Output wajib HANYA berupa format Array JSON murni tanpa ada teks pembuka, penutup, atau markdown block.
+    const silaDipilih = [];
+    for (let i = 0; i < 5; i++) {
+      const randomSila = Math.floor(Math.random() * 5) + 1;
+      silaDipilih.push(randomSila);
+    }
+    const hitungSila = {};
+    silaDipilih.forEach(sila => {
+      hitungSila[sila] = (hitungSila[sila] || 0) + 1;
+    });
+    const instruksiDistribusi = Object.entries(hitungSila)
+      .map(([sila, jumlah]) => `${jumlah} soal untuk Sila ke-${sila}`)
+      .join(', ');
+
+    console.log("=== KOMPOSISI SOAL KALI INI ===");
+    console.log(instruksiDistribusi);
+
+    const promptDinamis = `Kamu adalah pembuat soal kuis edukasi tentang penerapan Pancasila di era digital. Tugasmu adalah membuat tepat 5 (lima) soal pilihan ganda berupa studi kasus tentang bagaimana bersikap di media sosial atau internet. 
+
+PENTING: Buatkan komposisi soal dengan pembagian persis seperti ini: ${instruksiDistribusi}.
+
+Pastikan posisi jawaban yang benar (correct index) bervariasi secara acak (bisa 0, 1, 2, atau 3) di setiap soal, JANGAN meletakkan jawaban benar di index yang sama terus-menerus. Output wajib HANYA berupa format Array JSON murni tanpa ada teks pembuka, penutup, atau markdown block.
 
 Gunakan struktur Array persis seperti ini:
 [
@@ -37,67 +57,29 @@ Gunakan struktur Array persis seperti ini:
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        messages: [
+        "model": "gpt-4o-mini",
+        "messages": [
           {
-            role: 'user',
-            content: prompt
+            "role": "user",
+            "content": promptDinamis
           }
         ]
       })
     });
 
-    const responseBody = await response.text();
-    console.log('=== DATA DARI AI ===');
-    console.log('status', response.status, response.statusText);
-    console.log('body', responseBody);
-
+    const data = await response.json();
+    
     if (!response.ok) {
-      return res.status(response.status).json({
-        error: 'AI service returned an error',
-        status: response.status,
-        statusText: response.statusText,
-        body: responseBody
-      });
+      console.error("API Maelyn bermasalah. Status:", response.status);
+      return res.status(response.status).json({ error: "API AI Error", detail: data });
     }
 
-    let parsedResponse;
-    try {
-      parsedResponse = JSON.parse(responseBody);
-    } catch (parseError) {
-      throw new Error('AI response is not valid JSON: ' + parseError.message);
-    }
+    const newQuestions = JSON.parse(data.result.text);
+    res.json(newQuestions);
 
-    let newQuestionObj;
-    if (parsedResponse?.result?.text) {
-      newQuestionObj = JSON.parse(parsedResponse.result.text);
-    } else {
-      throw new Error('Tidak menemukan hasil kuis yang valid pada jawaban AI');
-    }
-
-    try {
-      if (Array.isArray(newQuestionObj)) {
-        newQuestionObj.forEach(q => {
-          if (!Array.isArray(q.opts) || typeof q.correct !== 'number') return;
-          const opts = q.opts.slice();
-          const idx = opts.map((_, i) => i);
-          for (let i = idx.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [idx[i], idx[j]] = [idx[j], idx[i]];
-          }
-          const newOpts = idx.map(i => opts[i]);
-          const newCorrect = idx.indexOf(q.correct);
-          q.opts = newOpts;
-          q.correct = newCorrect;
-        });
-      }
-    } catch (e) {
-      console.error('Gagal merandomisasi soal:', e);
-    }
-
-    res.json(newQuestionObj);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Terjadi kesalahan internal pada server." });
+    console.error("Error di server:", error);
+    res.status(500).json({ error: "Terjadi kesalahan internal pada server lokal." });
   }
 });
 
