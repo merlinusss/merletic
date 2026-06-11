@@ -10,6 +10,7 @@ app.use(express.static(__dirname));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
+
 app.post('/generate', async (req, res) => {
   try {
     const response = await fetch('https://api.maelyn.eu/api/ai/chatgpt', {
@@ -25,7 +26,7 @@ app.post('/generate', async (req, res) => {
         }]
       })
     });
-    const newQuestionObj = JSON.parse(data.result.text);
+    const newQuestionObj = JSON.parse(response.result.text);
     throw new console(newQuestionObj)
     res.json(newQuestionObj);
   } catch (error) {
