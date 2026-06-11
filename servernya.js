@@ -79,6 +79,14 @@ Gunakan struktur Array persis seperti ini:
     }
 
     const newQuestions = JSON.parse(data.result.text);
+    newQuestions.forEach(kuis => {
+      const teksJawabanBenar = kuis.opts[kuis.correct];
+      for (let i = kuis.opts.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [kuis.opts[i], kuis.opts[j]] = [kuis.opts[j], kuis.opts[i]];
+      }
+      kuis.correct = kuis.opts.indexOf(teksJawabanBenar);
+    });
     res.json(newQuestions);
 
   } catch (error) {
