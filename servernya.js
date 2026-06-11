@@ -68,12 +68,8 @@ Gunakan struktur Array persis seperti ini:
     }
 
     let newQuestionObj;
-    if (Array.isArray(parsedResponse)) {
-      newQuestionObj = parsedResponse;
-    } else if (parsedResponse?.result?.text) {
+    if (parsedResponse?.result?.text) {
       newQuestionObj = JSON.parse(parsedResponse.result.text);
-    } else if (parsedResponse?.choices?.[0]?.message?.content) {
-      newQuestionObj = JSON.parse(parsedResponse.choices[0].message.content);
     } else {
       throw new Error('Tidak menemukan hasil kuis yang valid pada jawaban AI');
     }
