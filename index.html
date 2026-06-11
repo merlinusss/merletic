@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pancasila di Era Digital — Etika, Moral & Kemanusiaan</title>
+<title>MerlEtic</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap');
@@ -101,7 +101,7 @@
   .hero-content {
     position:relative; z-index:2;
     text-align:center;
-    padding: 4rem 2rem;
+    padding: 2rem 2rem;
     max-width: 900px;
   }
   .hero-title {
@@ -109,26 +109,15 @@
     font-size: clamp(2.2rem, 6vw, 4.5rem);
     color: var(--parchment);
     line-height: 1.15;
-    margin-bottom: 0.5rem;
+    margin-bottom: 3rem;
   }
   .hero-title .accent { color: var(--gold-light); }
-  .hero-subtitle {
-    font-size: clamp(1rem, 2.5vw, 1.35rem);
-    color: var(--warm-gray);
-    font-style: italic;
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-  .hero-divider {
-    width: 120px; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    margin: 0 auto 2rem;
-  }
   .hero-desc {
     font-size: 1rem;
     color: rgba(245,240,232,0.7);
     line-height: 1.9;
-    max-width: 640px; margin: 0 auto 3rem;
+    max-width: 640px;
+    margin: 0 auto 3rem;
   }
   .hero-cta {
     display:inline-block;
@@ -375,8 +364,8 @@
     font-style:italic; font-size:1rem; line-height:1.7; color:var(--ink);
   }
 
-  /* ─── INTERAKTIF PAGE ─── */
-  .interaktif-body {
+  /* ─── EKSPLOR PAGE ─── */
+  .eksplor-body {
     max-width:900px; margin:0 auto; padding:4rem 2rem;
   }
   .tab-nav {
@@ -649,20 +638,32 @@
 
   /* ─── FOOTER ─── */
   footer {
-    background:var(--ink); border-top:1px solid rgba(184,134,11,0.3);
-    padding:2.5rem 2rem; text-align:center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background:var(--ink);
+    border-top:1px solid rgba(184,134,11,0.3);
+    padding:1.5rem 3rem;
+    text-align:center;
+    font-style:normal;
   }
-  footer p { color:var(--warm-gray); font-size:0.82rem; font-style:italic; line-height:1.8; }
-  footer strong { color:var(--gold); font-style:normal; }
+  footer p {
+    color:var(--warm-gray);
+    font-size:0.82rem;
+    line-height:1.8;
+  }
+  footer span {
+    color:var(--gold);
+    font-style:normal;
+  }
 
-  /* ─── SCROLL ANIMATIONS ─── */
+  /* ─── SCROLL ANIMASINYA ─── */
   .reveal {
     opacity:0; transform:translateY(24px);
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
   .reveal.visible { opacity:1; transform:none; }
 
-  /* ─── RESPONSIVE ─── */
   @media(max-width:768px){
     .nav-links { display:none; flex-direction:column; position:fixed; top:56px; left:0; right:0; bottom:0; background:var(--ink); padding:2rem; z-index:200; overflow-y:auto; }
     .nav-links.open { display:flex; }
@@ -682,11 +683,11 @@
 <nav>
   <div class="nav-logo">MerlEtic</div>
   <ul class="nav-links" id="navLinks">
-    <li><a href="#" class="active" onclick="showPage('home',this)">Beranda</a></li>
-    <li><a href="#" onclick="showPage('fenomena',this)">Fenomena</a></li>
-    <li><a href="#" onclick="showPage('nilai',this)">Nilai Moral</a></li>
-    <li><a href="#" onclick="showPage('interaktif',this)">Interaktif</a></li>
-    <li><a href="#" onclick="showPage('kesimpulan',this)">Kesimpulan</a></li>
+    <li><a href="javascript:void(0)" class="active" onclick="showPage('home',this)">Beranda</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('fenomena',this)">Fenomena</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('nilai',this)">Nilai Moral</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('eksplor',this)">Eksplorasi</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('kesimpulan',this)">Kesimpulan</a></li>
   </ul>
   <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -703,13 +704,10 @@
         <span class="accent">Nilai Moral & Etika</span><br>
         di Era Digital
       </h1>
-      <div class="hero-divider"></div>
-      <p class="hero-subtitle">Ketika teknologi tumbuh pesat, nilai kemanusiaan tidak boleh ikut terkikis.</p>
       <p class="hero-desc">
-        Di era digital saat ini, fenomena seperti <em>cyberbullying</em>, ujaran kebencian, intoleransi,
-        dan penyebaran hoaks semakin marak. Meskipun sebagian belum memiliki sanksi hukum langsung,
-        semua tindakan tersebut bertentangan dengan nilai-nilai Pancasila dan berdampak nyata
-        terhadap kehidupan sosial masyarakat.
+        Di era digital, <em>cyberbullying</em>, ujaran <em>kebencian</em>, <em>intoleransi</em>, dan <em>hoaks</em>
+        semakin marak serta bertentangan dengan nilai-nilai Pancasila,
+        meski tidak selalu disertai sanksi hukum langsung.
       </p>
       <a href="#" class="hero-cta" onclick="showPage('fenomena',null)">Telusuri Fenomena →</a>
     </div>
@@ -761,18 +759,17 @@
   </div>
 
   <footer>
-    <p><strong>Pancasila di Era Digital</strong><br>
-    Tugas Praktik · Pendidikan Pancasila · Program Studi Teknik Komputer<br>
-    <em>"Pancasila bukan hanya dihafal, tetapi diterapkan dalam etika dan perilaku sehari-hari."</em></p>
+    <p><strong>© 2026 - Merlinus<span>Store</span>.</strong></p>
+    <p><em><i class="fa-solid fa-location-dot"></i> Medan, Indonesia</em></p>
   </footer>
 </div>
 
 <!--  FENOMENA SOSIAL  -->
 <div class="page" id="page-fenomena">
   <div class="page-header">
-    <div class="eyebrow">Fenomena Sosial</div>
-    <h1>Realita Terkikisnya Nilai Kemanusiaan<br>di Ruang Digital</h1>
-    <p>Kasus nyata yang terjadi setiap hari di sekitar kita — dampaknya lebih dalam dari yang terlihat.</p>
+    <div class="eyebrow">Kasus nyata</div>
+    <h1>Terkikisnya Nilai Kemanusiaan<br>di Ruang Digital</h1>
+    <p>Kasus nyata yang terjadi setiap hari di sekitar kita yang dampaknya lebih dalam dari yang terlihat.</p>
   </div>
 
   <div class="fenomena-body">
@@ -903,8 +900,8 @@
 
   </div>
   <footer>
-    <p><strong>Pancasila di Era Digital</strong> · Fenomena Sosial<br>
-    <em>Data bersifat ilustratif untuk tujuan edukasi.</em></p>
+    <p><strong>© 2026 - Merlinus<span>Store</span>.</strong></p>
+    <p><em><i class="fa-solid fa-location-dot"></i> Medan, Indonesia</em></p>
   </footer>
 </div>
 
@@ -913,7 +910,7 @@
   <div class="page-header">
     <div class="eyebrow">Nilai Moral &amp; Etika</div>
     <h1>Pancasila Sebagai Kompas<br>Perilaku di Era Digital</h1>
-    <p>Setiap sila menyimpan panduan etika yang sangat relevan untuk kehidupan digital kita hari ini.</p>
+    <p>Setiap sila menyimpan panduan etika yang sangat relevan untuk kehidupan digital kita.</p>
   </div>
 
   <div class="nilai-body">
@@ -1051,20 +1048,20 @@
 
   </div>
   <footer>
-    <p><strong>Pancasila di Era Digital</strong> · Nilai Moral &amp; Etika<br>
-    <em>"Tidak semua perilaku buruk memiliki sanksi hukum, tetapi setiap tindakan tetap memiliki nilai moral dan dampak kemanusiaan."</em></p>
+    <p><strong>© 2026 - Merlinus<span>Store</span>.</strong></p>
+    <p><em><i class="fa-solid fa-location-dot"></i> Medan, Indonesia</em></p>
   </footer>
 </div>
 
-<!--  INTERAKTIF  -->
-<div class="page" id="page-interaktif">
+<!--  EKSPLOR  -->
+<div class="page" id="page-eksplor">
   <div class="page-header">
-    <div class="eyebrow">Media Interaktif</div>
-    <h1>Uji dan Refleksikan<br>Pemahaman Anda</h1>
-    <p>Tiga cara berbeda untuk merenungkan nilai Pancasila dalam kehidupan digital sehari-hari.</p>
+    <div class="eyebrow">Ruang Uji & Wawasan</div>
+    <h1>Uji dan Luaskan<br>Pemahaman Anda</h1>
+    <p>Adakah Nilai Pancasila dalam dirimu ?</p>
   </div>
 
-  <div class="interaktif-body">
+  <div class="eksplor-body">
     <div class="tab-nav">
       <button class="tab-btn active" onclick="showTab('quiz',this)">Kuis Nilai Pancasila</button>
       <button class="tab-btn" onclick="showTab('simulasi',this)">Berita Terkini</button>
@@ -1091,7 +1088,8 @@
 
   </div>
   <footer>
-    <p><strong>Pancasila di Era Digital</strong> · Media Interaktif</p>
+    <p><strong>© 2026 - Merlinus<span>Store</span>.</strong></p>
+    <p><em><i class="fa-solid fa-location-dot"></i> Medan, Indonesia</em></p>
   </footer>
 </div>
 
@@ -1099,8 +1097,8 @@
 <div class="page" id="page-kesimpulan">
   <div class="page-header">
     <div class="eyebrow">Kesimpulan</div>
-    <h1>Pesan Moral &amp;<br>Ajakan Perubahan Sikap</h1>
-    <p>Setiap pilihan kita adalah cerminan nilai yang kita pegang.</p>
+    <h1>Refleksi Moral &amp;<br>Langkah Perubahan</h1>
+    <p>Perubahan dimulai dari keberanian untuk memilih yang benar.</p>
   </div>
 
   <div class="kesimpulan-body">
@@ -1221,8 +1219,8 @@
 
   </div>
   <footer>
-    <p><strong>Pancasila di Era Digital</strong> · Tugas Praktik Pendidikan Pancasila · Program Studi Teknik Komputer<br>
-    <em>"Pancasila bukan hanya dihafal, tetapi diterapkan dalam etika dan perilaku sehari-hari."</em></p>
+    <p><strong>© 2026 - Merlinus<span>Store</span>.</strong></p>
+    <p><em><i class="fa-solid fa-location-dot"></i> Medan, Indonesia</em></p>
   </footer>
 </div>
 
@@ -1302,7 +1300,7 @@ async function makingQuestion() {
     newQuestion = await response.json();
     return newQuestion;
   } catch (err) {
-    document.getElementById('quiz-container').innerHTML = `<div style="padding:2rem;text-align:center;color:var(--warm-gray);">Terjadi kesalahan saat memuat soal.<br><button class="btn-primary" onclick="initQuiz()">Muat Ulang</button></div>`;
+    document.getElementById('quiz-container').innerHTML = `<div style="padding:2rem;text-align:center;color:var(--warm-gray);">Terjadi kesalahan saat memuat soal.<br><button class="btn-primary" onclick="initQuiz()" style="margin-top:1rem;">Muat Ulang</button></div>`;
     console.error(err);
     throw err;
   } finally {
@@ -1456,7 +1454,7 @@ async function loadBerita() {
   } catch (err) {
     console.error(err);
     beritaLoading = false;
-    container.innerHTML = `<div class="berita-error">Gagal memuat berita. <button class="btn-primary" onclick="loadBerita()">Muat Ulang</button></div>`;
+    container.innerHTML = `<div class="berita-error">Gagal memuat berita.<br><button class="btn-primary" onclick="loadBerita()">Muat Ulang</button></div>`;
   }
 }
 
