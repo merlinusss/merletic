@@ -117,7 +117,7 @@ Gunakan struktur Array persis seperti ini:
 ]`;
 
     const encodedPrompt = encodeURIComponent(promptBerita);
-    const apiUrl = `https://api.zenzxz.my.id/ai/copilot?message=${encodedPrompt}&model=gpt-5`;
+    const apiUrl = `https://api.nexray.eu.cc/ai/claude?text=${encodedPrompt}`;
     const response = await fetch(apiUrl);
     const data = await response.json();
     console.log("=== RESPONS DARI API BERITA ===");
