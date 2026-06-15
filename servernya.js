@@ -122,7 +122,7 @@ Gunakan struktur Array persis seperti ini:
     const data = await response.json();
     console.log("=== RESPONS DARI API BERITA ===");
     console.log(data);
-    const rawText = data.result.text;
+    const rawText = data.result;
     const beritaArray = JSON.parse(rawText);
     res.json(beritaArray)
   } catch (error) {
