@@ -24,58 +24,55 @@ function getRandomSilaOrder() {
 app.post('/generate', async (req, res) => {
   try {
     const silaDipilih = [];
-    const promptDinamis = `
-Kamu adalah pembuat soal kuis edukasi tentang penerapan Pancasila di era digital.
-
-Tugasmu adalah membuat tepat 5 (lima) soal pilihan ganda berupa studi kasus tentang bagaimana bersikap di media sosial atau internet berdasarkan nilai-nilai Pancasila.
-
-Gunakan ketentuan berikut (HARUS diikuti urutannya):
+    const promptDinamis = `Gunakan ketentuan berikut (HARUS diikuti urutannya):
 ${silaDipilih.map((sila, idx) => `- Soal ke-${idx + 1}: berdasarkan Sila ke-${sila}`).join('\n')}
 
-PENTING:
-- Setiap soal HARUS jelas menyebut konteks perilaku di media sosial atau internet.
-- Pastikan posisi jawaban yang benar (correct index) bervariasi secara acak (0, 1, 2, atau 3) di setiap soal.
-- Output wajib HANYA berupa format Array JSON murni tanpa ada teks pembuka, penutup, atau markdown block.
+PENTING UNTUK VARIASI SOAL (WAJIB DIIKUTI AGAR SOAL TIDAK MIRIP):
+
+    Gunakan Platform Berbeda: Variasikan latar tempat kejadian (misal: Grup WhatsApp keluarga, komentar TikTok, forum Reddit/Kaskus, in-game chat saat main game online, ulasan E-commerce, atau LinkedIn).
+
+    Gunakan Peran/Aktor Berbeda: Variasikan tokoh dalam soal (misal: seorang pelajar, kreator konten, penjual online, gamer, atau pekerja kantoran).
+
+    Variasikan Konflik sesuai Sila:
+
+        Sila 1: Hindari hanya bahas toleransi umum. Bisa bahas tentang konten dakwah yang menghargai agama lain, atau merespons komentar ujaran kebencian agama.
+
+        Sila 2: Bahas empati digital (misal: donasi online palsu, doxing, cyberbullying, atau etika menegur orang di medsos).
+
+        Sila 3: Bahas isu separatisme digital, cancel culture yang memecah belah, hoaks SARA, atau kampanye bangga produk lokal di internet.
+
+        Sila 4: Bahas etika berdebat di Twitter/X, voting online, tidak memaksakan opini pada influencer, atau musyawarah di grup WA.
+
+        Sila 5: Bahas pembajakan karya digital (hak cipta), flexing/pamer kekayaan yang tidak peka sosial, atau keadilan dalam memberi rating ke driver ojol/seller.
+
+ATURAN TEKNIS & FORMAT OUTPUT:
+
+    Setiap soal HARUS jelas menyebut konteks perilaku di media sosial atau internet.
+
+    Pastikan posisi jawaban yang benar (correct index) bervariasi secara acak (0, 1, 2, atau 3) di setiap soal.
+
+    Output wajib HANYA berupa format Array JSON murni tanpa ada teks pembuka, penutup, atau markdown block (tanpa json ... ).
 
 Gunakan struktur Array persis seperti ini:
 [
-  {
-    "q": "[Pertanyaan studi kasus]",
-    "opts": [
-      "[Pilihan jawaban index 0]",
-      "[Pilihan jawaban index 1]",
-      "[Pilihan jawaban index 2]",
-      "[Pilihan jawaban index 3]"
-    ],
-    "correct": [Angka index jawaban benar antara 0-3],
-    "feedback": "[Penjelasan jawaban mengacu pada Sila ke-berapa dan alasannya]"
-  }
+{
+"q": "[Pertanyaan studi kasus]",
+"opts": [
+"[Pilihan jawaban index 0]",
+"[Pilihan jawaban index 1]",
+"[Pilihan jawaban index 2]",
+"[Pilihan jawaban index 3]"
+],
+"correct": [Angka index jawaban benar antara 0-3],
+"feedback": "[Penjelasan jawaban mengacu pada Sila ke-berapa dan alasannya]"
+}
 ]`;
 
-    const response = await fetch('https://api.maelyn.eu/api/ai/chatgpt', {
-      method: 'POST',
-      headers: {
-        'x-maelyn-auth': process.env.MAELYN_API_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "model": "gpt-4o-mini",
-        "messages": [
-          {
-            "role": "user",
-            "content": promptDinamis
-          }
-        ]
-      })
-    });
+    const apiUrl = `https://api.nexray.eu.cc/ai/gemini?text=${promptDinamis}`;
+    const response = await fetch(apiUrl);
     const data = await response.json();
-    
-    if (!response.ok) {
-      console.error("API Maelyn bermasalah. Status:", response.status);
-      return res.status(response.status).json({ error: "API AI Error", detail: data });
-    }
 
-    const newQuestions = JSON.parse(data.result.text);
+    const newQuestions = JSON.parse(data.result);
     newQuestions.forEach(kuis => {
       const teksJawabanBenar = kuis.opts[kuis.correct];
       for (let i = kuis.opts.length - 1; i > 0; i--) {
